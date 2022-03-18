@@ -1,0 +1,4 @@
+---
+- name: Install Docker on Ubuntu (IMPISH).
+  include: impish.yml
+  tags: impish

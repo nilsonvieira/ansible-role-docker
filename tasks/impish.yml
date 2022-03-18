@@ -1,0 +1,63 @@
+---
+- name: "DOCKER: Install Dependencies"
+  apt:
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+  vars:
+    packages:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg-agent
+      - software-properties-common
+
+- name: "DOCKER: Add APT Key"
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg 
+    state: present
+
+- name: "DOCKER: Add repo Ubuntu Impish"
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu impish stable
+    state: present
+
+- name: "DOCKER: Install Packs in latest"
+  apt:
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+  vars:
+    packages:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+
+- name: "DOCKER: Start Service"
+  service:
+    name: docker
+    state: started
+
+- name: "DOCKER: Add User in Docker Group"
+  user:
+    name: "{{ usuario }}"
+    group: docker
+
+- name: "DOCKER: Create dir Service"
+  file:
+    path: /etc/systemd/system/docker.service.d
+    state: directory
+
+- name: "DOCKER: Create file daemon.json"
+  copy:
+    src: files/daemon.json
+    dest: /etc/docker/daemon.json
+
+- name: "DOCKER: Restart Services"
+  service:
+    name: docker
+    state: restarted
+
+- name: "DOCKER: Ralizar Daemon Reload"
+  systemd: systemctl daemon-reload
+  sudo: yes
