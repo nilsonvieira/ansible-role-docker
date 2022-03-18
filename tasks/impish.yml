@@ -58,6 +58,6 @@
     name: docker
     state: restarted
 
-- name: "DOCKER: Ralizar Daemon Reload"
-  systemd: systemctl daemon-reload
-  sudo: yes
+# - name: "DOCKER: Ralizar Daemon Reload"
+#   systemd: systemctl daemon-reload
+#   become: yes
